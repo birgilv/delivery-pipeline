@@ -1,7 +1,6 @@
-version: '3'
 services:
   db:
-    image: postgres:13
+    image: postgres:17
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -12,6 +11,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    networks:
+      - myapp-network
 
   web:
     build: .
@@ -32,3 +33,8 @@ services:
       - "3000:3000"
     volumes:
       - .:/myapp
+    networks:
+      - myapp-network
+
+networks:
+  myapp-network:
