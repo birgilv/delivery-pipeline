@@ -29,14 +29,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 2.5.9
+
       - name: Install dependencies
         run: |
-          gem install bundler -v 2.4.22   # Specify compatible Bundler version
+          gem install bundler -v 2.4.22
           bundle install --jobs 4 --retry 3
+
+      - name: Set execute permissions for Rails
+        run: chmod +x bin/rails
+
       - name: Set up database
         run: |
           bin/rails db:create db:schema:load
