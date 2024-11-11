@@ -1,3 +1,4 @@
+version: '3'
 services:
   db:
     image: postgres:13
@@ -10,13 +11,20 @@ services:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
-      retries: 10 
+      retries: 10
 
   web:
     build: .
-    command: bash -c "for i in {1..5}; do bin/rails db:prepare && break || sleep 5; done && rails test"
+    command: bash -c "
+      for i in {1..10}; do
+        pg_isready -h db -U postgres && break;
+        echo 'Waiting for database...';
+        sleep 5;
+      done &&
+      bin/rails db:create db:schema:load &&
+      rails test"
     depends_on:
-    - db
+      db:
         condition: service_healthy
     environment:
       DATABASE_URL: postgres://postgres:password@db:5432/myapp_test
