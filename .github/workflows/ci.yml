@@ -46,7 +46,7 @@ jobs:
       - name: Set up database
         run: |
           for i in {1..5}; do
-            bin/rails db:create db:schema:load && break || sleep 5
+            bundle exec rails db:create db:schema:load && break || sleep 10
           done
 
       - name: Run tests

@@ -1,18 +1,26 @@
 services:
   db:
-    image: postgres
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   web:
-    build:
-      context: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
-    volumes:
-      - .:/myapp
+    build: .
+    command: bash -c "for i in {1..5}; do bin/rails db:create db:schema:load && break || sleep 5; done"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/myapp_test
     ports:
       - "3000:3000"
-    depends_on:
-      - db
+    volumes:
+      - .:/myapp
