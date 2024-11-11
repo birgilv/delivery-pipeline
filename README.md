@@ -1,24 +1,9 @@
-# README
+## CI/CD Pipeline
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This project uses GitHub Actions for continuous integration and deployment. Below are the main steps in the pipeline:
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- **Checkout Code**: Clones the repository.
+- **Set Up Ruby**: Installs the specified Ruby version.
+- **Install Dependencies**: Installs required gems using Bundler.
+- **Database Setup**: Creates and loads the database schema.
+- **Run Tests**: Executes the test suite using RSpec.
