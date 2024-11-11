@@ -14,9 +14,9 @@ services:
 
   web:
     build: .
-    command: bash -c "for i in {1..5}; do bin/rails db:create db:schema:load && break || sleep 5; done"
+    command: bash -c "for i in {1..5}; do bin/rails db:prepare && break || sleep 5; done && rails test"
     depends_on:
-      db:
+    - db
         condition: service_healthy
     environment:
       DATABASE_URL: postgres://postgres:password@db:5432/myapp_test
