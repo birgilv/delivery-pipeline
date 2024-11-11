@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
@@ -29,36 +29,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-
       - name: Install dependencies
         run: |
           gem install bundler
           bundle install --jobs 4 --retry 3
-
       - name: Set up database
         run: |
           bin/rails db:create db:schema:load
-
       - name: Run tests
         run: |
           bin/rails test
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    if: github.ref == 'refs/heads/master'  # Only deploy from master branch
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "your-heroku-app-name"
-          heroku_email: "your-email@example.com"
